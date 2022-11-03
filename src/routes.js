@@ -18,6 +18,9 @@
 import Dashboard from "views/Dashboard.js";
 import UserProfile from "views/UserProfile.js";
 import FormRegistro from "views/FormRegistro.js";
+import EtapasRegistroActividad from "views/FormEtapa";
+import AreasRegistroActividad from "views/FormArea";
+import ClientesRegistroActividad from "views/FormCliente";
 import TableList from "views/TableList.js";
 import Typography from "views/Typography.js";
 import Icons from "views/Icons.js";
@@ -53,6 +56,27 @@ const dashboardRoutes = [
     name: "Registro",
     icon: "nc-icon nc-notes",
     component: FormRegistro,
+    layout: "/admin",
+  },
+  {
+    path: "/etapas",
+    name: "Etapas",
+    icon: "nc-icon nc-notes",
+    component: EtapasRegistroActividad,
+    layout: "/admin",
+  },
+  {
+    path: "/area",
+    name: "Areas",
+    icon: "nc-icon nc-notes",
+    component: AreasRegistroActividad,
+    layout: "/admin",
+  },
+  {
+    path: "/clientes",
+    name: "Clientes",
+    icon: "nc-icon nc-notes",
+    component: ClientesRegistroActividad,
     layout: "/admin",
   },
   {

@@ -13,7 +13,7 @@ import {
   Col,
 } from "react-bootstrap";
 
-function Registro() {
+function EtapasRegistroActividad() {
   return (
     <>
       <Container fluid>
@@ -22,7 +22,7 @@ function Registro() {
             <Card>
               <Card.Header>
                 <Card.Title as="h4" className="bg-dangerr text-whitee">
-                  Registro de actividades
+                  Etapa
                 </Card.Title>
               </Card.Header>
               <Card.Body>
@@ -237,4 +237,4 @@ function Registro() {
   );
 }
 
-export default Registro;
+export default EtapasRegistroActividad;
