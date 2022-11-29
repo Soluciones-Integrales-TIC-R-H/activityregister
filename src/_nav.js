@@ -45,11 +45,11 @@ const _nav = [
         name: 'Lista',
         to: '/clientes',
       },
-      {
-        component: CNavItem,
-        name: 'Nuevo cliente',
-        to: '/clientes/nuevo-registro',
-      },
+      // {
+      //   component: CNavItem,
+      //   name: 'Nuevo cliente',
+      //   to: '/clientes/nuevo-registro',
+      // },
     ],
   },
   {
