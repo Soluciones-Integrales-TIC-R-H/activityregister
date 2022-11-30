@@ -44,6 +44,7 @@ const URL_API_ALL_AREAS = process.env.REACT_APP_API_AREAS
 const URL_API_ALL_ETAPAS = process.env.REACT_APP_API_ETAPAS
 const URL_API_ALL_ACTIVIDADES = process.env.REACT_APP_API_ACTIVIDADES
 //FIN ELIMINAR LUEGO, CAMBIAR ESTRATEGIA DE OBTENCION DE DATOS
+const URL_API_FUNCIONARIOS = process.env.REACT_APP_API_FUNCIONARIOS_ACTIVOS
 const URL_API_AREAS = process.env.REACT_APP_API_AREAS_ACTIVAS
 const URL_API_CLIENTES = process.env.REACT_APP_API_CLIENTE_POR_AREA
 const URL_API_ETAPAS = process.env.REACT_APP_API_ETAPA_POR_AREA
@@ -90,6 +91,7 @@ const Formulario = () => {
   const [listaTodasLasAreas, setListaTodasLasAreas] = useState([])
   const [listaAreasActivas, setListaAreasActivas] = useState([])
   const [listaTodosLosClientes, setListaTodosLosClientes] = useState([])
+  const [listaFuncionarios, setListaFuncionarios] = useState([])
   const [listaClientes, setListaClientes] = useState([])
   const [listaTodasLasEtapas, setListaTodasLasEtapas] = useState([])
   const [listaEtapas, setListaEtapas] = useState([])
@@ -134,6 +136,17 @@ const Formulario = () => {
         }
       })
     }
+
+    const cargarFuncionarios = async () => {
+      await Axios.get(URL_API_FUNCIONARIOS).then((data) => {
+        if (data.data) {
+          setListaFuncionarios(data.data)
+        } else {
+          toast.error('No se cargaron las etapas')
+        }
+      })
+    }
+
     const cargarTodasLasEtapas = async () => {
       await Axios.get(URL_API_ALL_ETAPAS).then((data) => {
         if (data.data) {
@@ -163,6 +176,7 @@ const Formulario = () => {
     }
     setLoading(true)
     cargarTodasLasAreas()
+    cargarFuncionarios()
     cargarTodasLasEtapas()
     cargarTodasLasActividades()
     cargarTodosLosClientes()
@@ -188,8 +202,8 @@ const Formulario = () => {
     initialValues: {
       fechaRegistro: new Date().toISOString(),
       codigo: 'D0',
-      email: 'drenteria@dobleaasesorias.com',
-      nombre: 'Duhan Enrique Renteria Hernandez',
+      email: '',
+      nombre: '',
       fechaInicial: hoy.toString(),
       fechaFinal: hoy.toString(),
       area: '',
@@ -258,6 +272,15 @@ const Formulario = () => {
     if (listaDetalles.length > 1) {
       setMostrarDetalles(true)
       setActivarEnvio(true)
+    }
+
+    if (formik.values.email !== '') {
+      formik.values.nombre =
+        document.getElementById('email').options[
+          document.getElementById('email').selectedIndex
+        ].text
+    } else {
+      formik.values.nombre = ''
     }
   }, [formik.values])
 
@@ -354,25 +377,9 @@ const Formulario = () => {
       <CRow>
         <CCol md={6}>
           <label className="text-uppercase">
-            <strong>Email del responsable</strong>
-          </label>
-          <CFormInput
-            type="email"
-            id="email"
-            name="email"
-            feedback="Por favor, digita tú email empresarial"
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            value={formik.values.email}
-            className={formik.errors.email && 'form-control border-danger'}
-          />
-          {formik.errors.email ? <span className="text-danger">{formik.errors.email} </span> : null}
-        </CCol>
-        <CCol md={6}>
-          <label className="text-uppercase">
             <strong>Nombre del responsable</strong>
           </label>
-          <CFormInput
+          {/* <CFormInput
             type="text"
             id="nombre"
             name="nombre"
@@ -381,6 +388,46 @@ const Formulario = () => {
             onBlur={formik.handleBlur}
             value={formik.values.nombre}
             className={formik.errors.nombre && 'form-control border-danger'}
+          /> */}
+          <CFormSelect
+            id="email"
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            value={formik.values.email}
+            className={formik.errors.email && 'form-control border-danger'}
+          >
+            <option key="funcionario_0" value="">
+              -- SELECCION RESPONSABLE --
+            </option>
+            {listaFuncionarios.map((funcionario) => (
+              <option key={'funcionario_' + funcionario.Codigo} value={funcionario.Email}>
+                {funcionario.Nombre}
+              </option>
+            ))}
+          </CFormSelect>
+          {formik.errors.email ? <span className="text-danger">{formik.errors.email} </span> : null}
+        </CCol>
+        <CCol md={6}>
+          <label className="text-uppercase">
+            <strong>Email del responsable</strong>
+          </label>
+          <CFormInput
+            type="text"
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            value={formik.values.email}
+            className={formik.errors.email && 'form-control border-danger'}
+            disabled={true}
+          />
+          <CFormInput
+            id="nombre"
+            name="nombre"
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            value={formik.values.nombre}
+            className={formik.errors.nombre && 'form-control border-danger'}
+            disabled={true}
+            hidden={true}
           />
           {formik.errors.nombre ? (
             <span className="text-danger">{formik.errors.nombre} </span>
@@ -398,7 +445,6 @@ const Formulario = () => {
               <CFormInput
                 type="date"
                 id="fechaInicial"
-                feedback="Por favor, selecciona la fecha de inicio"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 value={formik.values.fechaInicial}
@@ -415,7 +461,6 @@ const Formulario = () => {
               <CFormInput
                 type="date"
                 id="fechaFinal"
-                feedback="Por favor, selecciona la fecha de finalización"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 value={formik.values.fechaFinal}

@@ -41,12 +41,12 @@ const URL_API_EVENTOS_REPORTE = process.env.REACT_APP_API_EVENTOS_REPORTE
 const URL_API_ELIMINAR_ITEM = process.env.REACT_APP_API_EVENTO_ELIMINAR
 const URL_API_RESTAURAR_ITEM = process.env.REACT_APP_API_EVENTO_RESTAURAR
 
+const URL_API_FUNCIONARIOS = process.env.REACT_APP_API_FUNCIONARIOS_ACTIVOS
 const URL_API_AREAS = process.env.REACT_APP_API_AREAS_ACTIVAS
 const URL_API_CLIENTES = process.env.REACT_APP_API_CLIENTE_POR_AREA
 const URL_API_ETAPAS = process.env.REACT_APP_API_ETAPA_POR_AREA
 
 //==================================VISTA==================================
-
 const Vista = () => {
   return (
     <CRow>
@@ -64,7 +64,6 @@ const Vista = () => {
     </CRow>
   )
 }
-
 //==================================ACCIONES==================================
 function refreshPage() {
   setTimeout(() => {
@@ -101,7 +100,6 @@ const restaurarLogicamente = (url, codigo) => {
   }
 }
 //==================================COLUMNAS DE TABLA REPORTE==================================
-
 const Columnas = [
   { id: 'Codigo', name: 'Codigo', selector: (row) => row.CodEvento, omit: true },
   {
@@ -221,35 +219,6 @@ const Columnas = [
   //   ),
   // },
 ]
-
-// eslint-disable-next-line react/prop-types
-const ExpandedComponent = ({ data }) => <pre>{JSON.stringify(data, null, 2)}</pre>
-
-const conditionalRowStyles = [
-  {
-    when: (row) => row.calories < 300,
-    style: {
-      backgroundColor: 'green',
-      color: 'white',
-      '&:hover': {
-        cursor: 'pointer',
-      },
-    },
-  },
-  // You can also pass a callback to style for additional customization
-  {
-    when: (row) => row.CodEvento < 400,
-    style: (row) => ({ backgroundColor: row.isSpecial ? 'pink' : 'inerit' }),
-  },
-]
-
-const paginacionOpciones = {
-  rowsPerPageText: 'Filas por página',
-  rangeSeparatorText: 'de',
-  selectAllRowsItem: true,
-  selectAllRowsItemText: 'Todos',
-}
-
 //==================================FORMULARIO==================================
 const FormularioSchema = Yup.object({
   fechaInicial: Yup.date('Fecha incorrecta').required('Campo requerido'),
@@ -273,14 +242,14 @@ const Formulario = () => {
   const [stateAreaControl, setStateAreaControl] = useState('')
   const [stateEtapaControl, setStateEtapaControl] = useState('')
 
-  //Descargar
-  const tableRef = useRef(null)
-
   useEffect(() => {
     const loadData = async () => {
       await Axios.get(URL_API_AREAS).then((data) => {
-        console.log('Soy el data', data)
         setAreaList(data.data)
+      })
+
+      await Axios.get(URL_API_FUNCIONARIOS).then((data) => {
+        setFuncionarioList(data.data)
       })
 
       await Axios.get(
@@ -468,11 +437,8 @@ const Formulario = () => {
                     TODOS LOS REGISTROS
                   </option>
                   {funcionarioList.map((funcionario) => (
-                    <option
-                      key={'funcionario_' + funcionario.CodFuncionario}
-                      value={funcionario.CodFuncionario}
-                    >
-                      {funcionario.NameFuncionario}
+                    <option key={'funcionario_' + funcionario.Codigo} value={funcionario.Email}>
+                      {funcionario.Nombre}
                     </option>
                   ))}
                 </CFormSelect>

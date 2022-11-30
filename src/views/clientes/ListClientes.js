@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import Axios from 'axios'
+import { eliminarLogicamente, restaurarLogicamente } from 'src/services/AccionesLogicas'
 import {
   CBadge,
   CButton,
@@ -17,7 +18,7 @@ import {
 } from '@coreui/react'
 
 import CIcon from '@coreui/icons-react'
-import { cilCommand, cilDescription, cilEqualizer } from '@coreui/icons'
+import { cilActionUndo, cilCommand, cilDelete, cilDescription, cilEqualizer } from '@coreui/icons'
 
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
@@ -143,29 +144,30 @@ const Columnas = [
     sortable: true,
     center: true,
   },
-  // {
-  //   name: '',
-  //   button: true,
-  //   cell: (row) => (
-  //     <a href={row.posterUrl} target="_blank" rel="noopener noreferrer">
-  //       Download
-  //     </a>
-  //   ),
-  // },
-  // {
-  //   name: '',
-  //   button: true,
-  //   cell: (row) => (
-  //     <CButton
-  //       variant="outline"
-  //       onClick={() => eliminarLogicamente(URL_API_ELIMINAR_ITEM, row.CodEvento)}
-  //       className="btn btn-sm btn-outline-danger ms-2"
-  //       title={'Eliminar ' + URL_API_ELIMINAR_ITEM + '/' + row.CodEvento}
-  //     >
-  //       <CIcon className="text-whitee" icon={cilDelete} />
-  //     </CButton>
-  //   ),
-  // },
+  {
+    name: '',
+    button: true,
+    cell: (row) =>
+      row.Estado === 'Activo' ? (
+        <CButton
+          variant="outline"
+          onClick={() => eliminarLogicamente(URL_API_ELIMINAR_ITEM, row.Codigo)}
+          className="btn btn-sm btn-outline-danger ms-2"
+          title={'Eliminar cliente'}
+        >
+          <CIcon className="text-whitee" icon={cilDelete} />
+        </CButton>
+      ) : (
+        <CButton
+          variant="outline"
+          onClick={() => restaurarLogicamente(URL_API_RESTAURAR_ITEM, row.Codigo)}
+          className="btn btn-sm btn-outline-warning ms-2"
+          title={'Restaurar cliente'}
+        >
+          <CIcon className="text-whitee" icon={cilActionUndo} />
+        </CButton>
+      ),
+  },
 ]
 
 //==================================FORMULARIO==================================
