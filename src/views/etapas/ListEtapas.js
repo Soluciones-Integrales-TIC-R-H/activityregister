@@ -25,7 +25,7 @@ import { nanoid } from 'nanoid'
 import TablaReporteExportar from 'src/components/TablaReporteExportar'
 import { eliminarLogicamente, restaurarLogicamente } from 'src/services/AccionesLogicas'
 
-const URL_API_DATOS_LISTADO = process.env.REACT_APP_API_ETAPAS_REPORTE
+const URL_API_DATOS_LISTADO = process.env.REACT_APP_API_ETAPAS_CONSULTA_AVANZADA
 const URL_API_ELIMINAR_ITEM = process.env.REACT_APP_API_ETAPA_ELIMINAR
 const URL_API_RESTAURAR_ITEM = process.env.REACT_APP_API_ETAPA_RESTAURAR
 const URL_API_AREAS = process.env.REACT_APP_API_AREAS_ACTIVAS
@@ -125,13 +125,7 @@ const Formulario = () => {
         setAreaList(data.data)
       })
 
-      await Axios.get(
-        `${URL_API_DATOS_LISTADO}/nombre/${
-          formik.initialValues.nombre !== '' ? formik.initialValues.nombre : 'all'
-        }/areas/${formik.initialValues.area > 0 ? formik.initialValues.area : 'all'}/estado/${
-          formik.initialValues.estado !== '' ? formik.initialValues.estado : 'all'
-        }`,
-      ).then((data) => {
+      Axios.post(URL_API_DATOS_LISTADO, formik.initialValues).then((data) => {
         if (data.data) {
           //toast.success('Listado generado')
           setDatosListado(data.data)
@@ -166,15 +160,7 @@ const Formulario = () => {
   }, [formik.values])
 
   const sendData = async (dataForm) => {
-    await Axios.get(
-      URL_API_DATOS_LISTADO +
-        '/nombre/' +
-        (dataForm.nombre !== '' ? dataForm.nombre : 'all') +
-        '/areas/' +
-        (dataForm.area > 0 ? dataForm.area : 'all') +
-        '/estado/' +
-        (dataForm.estado !== '' ? dataForm.estado : 'all'),
-    ).then((data) => {
+    Axios.post(URL_API_DATOS_LISTADO, dataForm).then((data) => {
       console.log('datos ', dataForm)
       if (data.data) {
         toast.success('Listado generado')
@@ -229,7 +215,7 @@ const Formulario = () => {
                     TODAS LAS AREAS
                   </option>
                   {areaList.map((area) => (
-                    <option key={'area_' + area.CodArea} value={area.Codigo}>
+                    <option key={'area_' + area.Codigo} value={area.Codigo}>
                       {area.Nombre}
                     </option>
                   ))}
@@ -252,10 +238,10 @@ const Formulario = () => {
                   <option key="estado_0" value="">
                     Todos
                   </option>
-                  <option key="estado_1" value="1">
+                  <option key="estado_1" value="Activa">
                     Activa
                   </option>
-                  <option key="estado_2" value="0">
+                  <option key="estado_2" value="Inactiva">
                     Inactiva
                   </option>
                 </CFormSelect>

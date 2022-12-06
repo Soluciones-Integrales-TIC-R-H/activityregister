@@ -17,7 +17,7 @@ export const eliminarLogicamente = async (
 ) => {
   console.log('Eliminando')
   if (url !== '' && codigo !== '') {
-    await Axios.get(url + '/' + codigo).then((data) => {
+    Axios.put(url, { codigo: codigo }).then((data) => {
       console.log(data)
       if (data.status === 200) {
         toast.success(msnExito)
@@ -37,7 +37,7 @@ export const restaurarLogicamente = async (
 ) => {
   console.log('Restaurando')
   if (url !== '' && codigo !== '') {
-    await Axios.get(url + '/' + codigo).then((data) => {
+    await Axios.put(url, { codigo: codigo }).then((data) => {
       if (data.status === 200) {
         toast.success(msnExito)
         refreshPage()

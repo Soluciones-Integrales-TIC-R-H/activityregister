@@ -51,7 +51,7 @@ const FormularioSchema = Yup.object({
   nombre: Yup.string().required('Campo requerido'),
   areas: Yup.array().required('Campo requerido').min(1, 'Campo requerido'),
   notas: Yup.string(),
-  estadoEtapa: Yup.boolean(),
+  estado: Yup.boolean(),
 })
 
 const Formulario = () => {
@@ -75,11 +75,11 @@ const Formulario = () => {
       nombre: '',
       areas: '[]',
       notas: '',
-      estadoEtapa: true,
+      estado: true,
     },
     validationSchema: FormularioSchema,
     onSubmit: (values) => {
-      alert(JSON.stringify(values, null, 2))
+      //alert(JSON.stringify(values, null, 2))
       sendData(values)
       //formik.values.areas = []
       //formik.resetForm()
@@ -182,11 +182,11 @@ const Formulario = () => {
           </label>
           <CFormSwitch
             label="Activa"
-            id="estadoEtapa"
+            id="estado"
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
-            value={formik.values.estadoEtapa}
-            checked={formik.values.estadoEtapa}
+            value={formik.values.estado}
+            checked={formik.values.estado}
           />
         </CCol>
         <CCol xs={12}>

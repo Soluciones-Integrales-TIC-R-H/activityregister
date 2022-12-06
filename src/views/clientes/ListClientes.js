@@ -25,7 +25,7 @@ import 'react-toastify/dist/ReactToastify.css'
 import { nanoid } from 'nanoid'
 import TablaReporteExportar from 'src/components/TablaReporteExportar'
 
-const URL_API_DATOS_REPORTE = process.env.REACT_APP_API_CLIENTES_REPORTE
+const URL_API_DATOS_REPORTE = process.env.REACT_APP_API_CLIENTES_CONSULTA_AVANZADA
 const URL_API_ELIMINAR_ITEM = process.env.REACT_APP_API_CLIENTE_ELIMINAR
 const URL_API_RESTAURAR_ITEM = process.env.REACT_APP_API_CLIENTE_RESTAURAR
 
@@ -189,23 +189,11 @@ const Formulario = () => {
 
   useEffect(() => {
     const loadData = async () => {
-      await Axios.get(URL_API_AREAS).then((data) => {
+      Axios.get(URL_API_AREAS).then((data) => {
         setAreaList(data.data)
       })
 
-      await Axios.get(
-        URL_API_DATOS_REPORTE +
-          '/servicio/' +
-          (formik.initialValues.servicio !== '' ? formik.initialValues.servicio : 'all') +
-          '/area/' +
-          (formik.initialValues.area !== '' ? formik.initialValues.area : 'all') +
-          '/responsable/' +
-          (formik.initialValues.responsable !== '' ? formik.initialValues.responsable : 'all') +
-          '/nombre/' +
-          (formik.initialValues.nombre !== '' ? formik.initialValues.nombre : 'all') +
-          '/estado/' +
-          (formik.initialValues.estado !== '' ? formik.initialValues.estado : 'all'),
-      ).then((data) => {
+      Axios.post(URL_API_DATOS_REPORTE, formik.initialValues).then((data) => {
         if (data.data) {
           //toast.success('Listado generado')
           setDatosListado(data.data)
@@ -242,19 +230,7 @@ const Formulario = () => {
   }, [formik.values])
 
   const sendData = async (dataForm) => {
-    await Axios.get(
-      URL_API_DATOS_REPORTE +
-        '/servicio/' +
-        (parseInt(formik.initialValues.servicio) !== '' ? formik.initialValues.servicio : 'all') +
-        '/area/' +
-        (formik.initialValues.area !== '' ? formik.initialValues.area : 'all') +
-        '/responsable/' +
-        (formik.initialValues.responsable !== '' ? formik.initialValues.responsable : 'all') +
-        '/nombre/' +
-        (formik.initialValues.nombre !== '' ? formik.initialValues.nombre : 'all') +
-        '/estado/' +
-        (formik.initialValues.estado !== '' ? formik.initialValues.estado : 'all'),
-    ).then((data) => {
+    Axios.post(URL_API_DATOS_REPORTE, dataForm).then((data) => {
       console.log('datos ', dataForm)
       if (data.data) {
         toast.success('Listado generado')
@@ -356,6 +332,7 @@ const Formulario = () => {
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   value={formik.values.responsable}
+                  disabled={true}
                   className={formik.errors.responsable && 'form-control border-danger'}
                 >
                   <option key="funcionario_0" value="">
@@ -388,10 +365,10 @@ const Formulario = () => {
                   <option key="estado_all" value="">
                     TODOS
                   </option>
-                  <option key="estado_1" value="1">
+                  <option key="estado_1" value="Activo">
                     Activo
                   </option>
-                  <option key="estado_0" value="0">
+                  <option key="estado_0" value="Inactivo">
                     Inactivo
                   </option>
                 </CFormSelect>

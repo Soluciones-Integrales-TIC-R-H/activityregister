@@ -37,7 +37,7 @@ import TablaReporte from 'src/components/TablaReporte'
 import { nanoid } from 'nanoid'
 import TablaReporteSearch from 'src/components/TablaReporteSearch'
 
-const URL_API_EVENTOS_REPORTE = process.env.REACT_APP_API_EVENTOS_REPORTE
+const URL_API_EVENTOS_REPORTE = process.env.REACT_APP_API_EVENTOS_CONSULTA_AVANZADA
 const URL_API_ELIMINAR_ITEM = process.env.REACT_APP_API_EVENTO_ELIMINAR
 const URL_API_RESTAURAR_ITEM = process.env.REACT_APP_API_EVENTO_RESTAURAR
 
@@ -252,21 +252,7 @@ const Formulario = () => {
         setFuncionarioList(data.data)
       })
 
-      await Axios.get(
-        URL_API_EVENTOS_REPORTE +
-          '/area/' +
-          (formik.initialValues.area > 0 ? formik.initialValues.area : 'all') +
-          '/etapa/' +
-          (formik.initialValues.etapa > 0 ? formik.initialValues.etapa : 'all') +
-          '/cliente/' +
-          (formik.initialValues.cliente > 0 ? formik.initialValues.cliente : 'all') +
-          '/responsable/' +
-          (formik.initialValues.responsable !== '' ? formik.initialValues.responsable : 'all') +
-          '/inicio/' +
-          formik.initialValues.fechaInicial +
-          '/hasta/' +
-          formik.initialValues.fechaFinal,
-      ).then((data) => {
+      await Axios.post(URL_API_EVENTOS_REPORTE, formik.initialValues).then((data) => {
         if (data.data) {
           //toast.success('Listado generado')
           setDatosEventos(data.data)
@@ -348,21 +334,7 @@ const Formulario = () => {
   }, [formik.values, stateAreaControl, stateEtapaControl])
 
   const sendData = async (dataForm) => {
-    await Axios.get(
-      URL_API_EVENTOS_REPORTE +
-        '/area/' +
-        (dataForm.area > 0 ? dataForm.area : 'all') +
-        '/etapa/' +
-        (dataForm.etapa > 0 ? dataForm.etapa : 'all') +
-        '/cliente/' +
-        (dataForm.cliente > 0 ? dataForm.cliente : 'all') +
-        '/responsable/' +
-        (dataForm.responsable !== '' ? dataForm.responsable : 'all') +
-        '/inicio/' +
-        dataForm.fechaInicial +
-        '/hasta/' +
-        dataForm.fechaFinal,
-    ).then((data) => {
+    Axios.post(URL_API_EVENTOS_REPORTE, dataForm).then((data) => {
       console.log('datos ', dataForm)
       if (data.data) {
         toast.success('Listado generado')
