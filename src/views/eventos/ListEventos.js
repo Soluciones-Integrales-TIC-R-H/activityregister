@@ -159,7 +159,13 @@ const Columnas = [
     sortable: true,
     wrap: true,
   },
-  { id: 'Actividades', name: 'Actividades', selector: (row) => row.Actividades, omit: true },
+  { id: 'Actividades', name: 'CodeActividades', selector: (row) => row.Actividades, omit: true },
+  {
+    id: 'NombreActividades',
+    name: 'Actividades',
+    selector: (row) => row.NombreActividades,
+    omit: true,
+  },
   { id: 'Tiempo', name: 'Tiempo', selector: (row) => row.Tiempo, right: true },
   {
     id: 'Observaciones',

@@ -149,7 +149,7 @@ const Formulario = () => {
                 id={'ETAPA_' + etapa.Codigo}
                 name="etapas"
                 value={etapa.Codigo}
-                label={etapa.Nombre + ' (' + etapa.AreasAsociadas + ')'}
+                label={etapa.Nombre + ' ' + etapa.NombreAreas}
                 title={etapa.AreasAsociadas}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}

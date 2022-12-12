@@ -82,7 +82,13 @@ const Login = () => {
                       tempor incididunt ut labore et dolore magna aliqua.
                     </p>
                     <div className="clearfix">
-                      <CImage align="center" rounded src={logoCliente} width={300} height={100} />
+                      <CImage
+                        align="center"
+                        src={logoCliente}
+                        width={300}
+                        height={100}
+                        rounded={true}
+                      />
                     </div>
                     <Link to="/register" hidden>
                       <CButton color="primary" className="mt-3" active tabIndex={-1}>

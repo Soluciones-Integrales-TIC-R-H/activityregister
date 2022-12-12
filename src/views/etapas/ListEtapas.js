@@ -68,6 +68,14 @@ const Columnas = [
     selector: (row) => row.AreasAsociadas,
     grow: 3,
     wrap: true,
+    omit: true,
+  },
+  {
+    id: 'NombreAreas',
+    name: 'Areas asociadas',
+    selector: (row) => row.NombreAreas,
+    grow: 3,
+    wrap: true,
   },
   {
     id: 'Estado',

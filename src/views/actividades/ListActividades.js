@@ -68,6 +68,15 @@ const Columnas = [
     grow: 2,
     sortable: true,
     wrap: true,
+    omit: true,
+  },
+  {
+    id: 'NombreEtapas',
+    name: 'Etapas asociadas',
+    selector: (row) => row.NombreEtapas,
+    grow: 2,
+    sortable: true,
+    wrap: true,
   },
   {
     id: 'Estado',
