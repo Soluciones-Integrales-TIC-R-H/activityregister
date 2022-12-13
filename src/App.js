@@ -1,44 +1,72 @@
-import { CSpinner } from '@coreui/react'
-import React, { Component, Suspense } from 'react'
-import { HashRouter, Route, Routes } from 'react-router-dom'
+import React, { useState } from 'react'
 import './scss/style.scss'
-import './assets/css/dataTableCustom.css'
+import { PageLayout } from './components/PageLayout'
+import { AuthenticatedTemplate, UnauthenticatedTemplate, useMsal } from '@azure/msal-react'
+import { CButton, CContainer } from '@coreui/react'
+import { loginRequest } from './authConfig'
+import { callMsGraph } from './graph'
+import { ProfileData } from './components/ProfileData'
+import Login from './views/pages/login/Login'
 
-const loading = (
-  <div className="pt-5 text-center">
-    {/* <div className="sk-spinner sk-spinner-pulse"></div> */}
-    <CSpinner ccolor="dark" variant="grow" style={{ width: '200px', height: '200px' }} />
-  </div>
-)
+/**
+ * Renders information about the signed-in user or a button to retrieve data about the user
+ */
+const ProfileContent = () => {
+  const { instance, accounts } = useMsal()
+  const [graphData, setGraphData] = useState(null)
 
-// Containers
-const DefaultLayout = React.lazy(() => import('./layout/DefaultLayout'))
-
-// Pages
-const Login = React.lazy(() => import('./views/pages/login/Login'))
-//const Login = React.lazy(() => import('./components/LoginButton'))
-const Register = React.lazy(() => import('./views/pages/register/Register'))
-const Page404 = React.lazy(() => import('./views/pages/page404/Page404'))
-const Page500 = React.lazy(() => import('./views/pages/page500/Page500'))
-
-class App extends Component {
-  render() {
-    return (
-      <HashRouter>
-        <Suspense fallback={loading}>
-          <Routes>
-            <Route exact path="/login" name="Login Page" element={<Login />} />
-            {/* <Route exact path="*" name="Login Page" element={<Login />} /> */}
-            <Route exact path="/register" name="Register Page" element={<Register />} />
-            <Route exact path="/404" name="Page 404" element={<Page404 />} />
-            <Route exact path="/500" name="Page 500" element={<Page500 />} />
-            <Route path="*" name="Home" element={<DefaultLayout />} />
-            {/* <Route path="/admin" name="Home" element={<DefaultLayout />} /> */}
-          </Routes>
-        </Suspense>
-      </HashRouter>
-    )
+  function RequestProfileData() {
+    // Silently acquires an access token which is then attached to a request for MS Graph data
+    instance
+      .acquireTokenSilent({
+        ...loginRequest,
+        account: accounts[0],
+      })
+      .then((response) => {
+        callMsGraph(response.accessToken).then((response) => setGraphData(response))
+      })
   }
+
+  return (
+    <>
+      <h5 className="card-title">
+        Welcome {JSON.stringify(accounts[0])} {accounts[0].name}
+      </h5>
+      {graphData ? (
+        <ProfileData graphData={graphData} />
+      ) : (
+        <CButton color="secondary" onClick={RequestProfileData}>
+          Request Profile Information
+        </CButton>
+      )}
+    </>
+  )
 }
 
-export default App
+/**
+ * If a user is authenticated the ProfileContent component above is rendered. Otherwise a message indicating a user is not authenticated is rendered.
+ */
+const MainContent = () => {
+  return (
+    <div className="App">
+      <AuthenticatedTemplate>
+        <ProfileContent />
+      </AuthenticatedTemplate>
+
+      <UnauthenticatedTemplate>
+        <h5 className="card-title">Please sign-in to see your profile information.</h5>
+        {/* <CContainer>
+          <Login />
+        </CContainer> */}
+      </UnauthenticatedTemplate>
+    </div>
+  )
+}
+
+export default function App() {
+  return (
+    <PageLayout>
+      <MainContent />
+    </PageLayout>
+  )
+}

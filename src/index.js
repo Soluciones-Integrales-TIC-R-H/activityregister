@@ -3,25 +3,30 @@ import 'core-js'
 import React from 'react'
 import { createRoot } from 'react-dom/client'
 import App from './App'
+import { PublicClientApplication } from '@azure/msal-browser'
+import { MsalProvider } from '@azure/msal-react'
+import { msalConfig } from './authConfig'
 import reportWebVitals from './reportWebVitals'
 import { Provider } from 'react-redux'
 import store from './store'
-import { Auth0Provider } from '@auth0/auth0-react'
 
-const DOMAIN = process.env.REACT_APP_AUTH_DOMAIN
-const CLIENTID = process.env.REACT_APP_AUTH_CLIENT_ID
-const DOMAIN_365 = process.env.REACT_APP_AUTH_DOMAIN_365
-const CLIENTID_365 = process.env.REACT_APP_AUTH_CLIENT_ID_365
+/**
+ * Initialize a PublicClientApplication instance which is provided to the MsalProvider component
+ * We recommend initializing this outside of your root component to ensure it is not re-initialized on re-renders
+ */
+const msalInstance = new PublicClientApplication(msalConfig)
 
+/**
+ * We recommend wrapping most or all of your components in the MsalProvider component. It's best to render the MsalProvider as close to the root as possible.
+ */
 createRoot(document.getElementById('root')).render(
   <Provider store={store}>
-    {/* <Auth0Provider domain={DOMAIN} clientId={CLIENTID} redirectUri={window.location.origin}> */}
-    <App />
-    {/* </Auth0Provider> */}
+    <React.StrictMode>
+      <MsalProvider instance={msalInstance}>
+        <App />
+      </MsalProvider>
+    </React.StrictMode>
   </Provider>,
 )
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals()
