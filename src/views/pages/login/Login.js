@@ -18,7 +18,7 @@ import CIcon from '@coreui/icons-react'
 import { cilLockLocked, cilUser } from '@coreui/icons'
 import fondoImg from './../../../assets/images/fondos/bg-fondo.jpg'
 import logoCliente from './../../../assets/images/logos/cliente.png'
-import LoginButton from 'src/components/LoginButton'
+import { SignInButton } from 'src/components/LoginButton'
 
 const Login = () => {
   return (
@@ -45,7 +45,7 @@ const Login = () => {
                         type="email"
                         placeholder="Username"
                         autoComplete="username"
-                        required
+                        disabled={true}
                       />
                     </CInputGroup>
                     <CInputGroup className="mb-4">
@@ -56,18 +56,17 @@ const Login = () => {
                         type="password"
                         placeholder="Password"
                         autoComplete="current-password"
+                        disabled={true}
                       />
                     </CInputGroup>
                     <CRow>
-                      <CCol xs={6}>
+                      <CCol xs={6} hidden>
                         <CButton color="primary" className="px-4" type="submit">
                           Login
                         </CButton>
                       </CCol>
-                      <CCol xs={6} className="text-right" hidden>
-                        <CButton color="link" className="px-0">
-                          Forgot password?
-                        </CButton>
+                      <CCol xs={6}>
+                        <SignInButton titleButton={'Ingresar'} />
                       </CCol>
                     </CRow>
                   </CForm>
@@ -95,8 +94,6 @@ const Login = () => {
                         Register Now!
                       </CButton>
                     </Link>
-
-                    <LoginButton />
                   </div>
                 </CCardBody>
               </CCard>

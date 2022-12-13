@@ -1,16 +1,29 @@
 import React from 'react'
-import { useAuth0 } from '@auth0/auth0-react'
+import { useMsal } from '@azure/msal-react'
+import { loginRequest } from '../authConfig'
 import { CButton } from '@coreui/react'
 
-const LoginButton = () => {
-  const { loginWithRedirect } = useAuth0()
+/**
+ * Renders a drop down button with child buttons for logging in with a popup or redirect
+ */
+// eslint-disable-next-line react/prop-types
+export const SignInButton = ({ loginPopup = false, titleButton }) => {
+  const { instance } = useMsal()
+
+  const handleLogin = (loginType) => {
+    if (loginType === 'popup') {
+      instance.loginPopup(loginRequest).catch((e) => {
+        console.log(e)
+      })
+    } else if (loginType === 'redirect') {
+      instance.loginRedirect(loginRequest).catch((e) => {
+        console.log(e)
+      })
+    }
+  }
   return (
-    <div className="pt-3 text-center">
-      <CButton className="btn-secondary" onClick={() => loginWithRedirect()}>
-        Login Auth0
-      </CButton>
-    </div>
+    <CButton onClick={() => (loginPopup ? handleLogin('popup') : handleLogin('redirect'))}>
+      {titleButton}
+    </CButton>
   )
 }
-
-export default LoginButton
