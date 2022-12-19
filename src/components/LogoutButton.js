@@ -1,6 +1,8 @@
 import React from 'react'
 import { useMsal } from '@azure/msal-react'
 import { CButton } from '@coreui/react'
+import CIcon from '@coreui/icons-react'
+import { cilAccountLogout } from '@coreui/icons'
 
 /**
  * Renders a drop down button with child buttons for logging in with a popup or redirect
@@ -22,8 +24,14 @@ export const SignOutButton = ({ logoutPopup = false, titleButton }) => {
     }
   }
   return (
-    <CButton onClick={() => (logoutPopup ? handleLogout('popup') : handleLogout('redirect'))}>
-      {titleButton}
-    </CButton>
+    <div className="d-grid gap-2 mx-auto">
+      <CButton
+        variant="ghost"
+        color="danger"
+        onClick={() => (logoutPopup ? handleLogout('popup') : handleLogout('redirect'))}
+      >
+        <CIcon icon={cilAccountLogout} /> {titleButton}
+      </CButton>
+    </div>
   )
 }

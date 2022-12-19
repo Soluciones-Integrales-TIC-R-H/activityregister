@@ -2,6 +2,8 @@ import React from 'react'
 import { useMsal } from '@azure/msal-react'
 import { loginRequest } from '../authConfig'
 import { CButton } from '@coreui/react'
+import CIcon from '@coreui/icons-react'
+import { cilLockLocked } from '@coreui/icons'
 
 /**
  * Renders a drop down button with child buttons for logging in with a popup or redirect
@@ -23,7 +25,7 @@ export const SignInButton = ({ loginPopup = false, titleButton }) => {
   }
   return (
     <CButton onClick={() => (loginPopup ? handleLogin('popup') : handleLogin('redirect'))}>
-      {titleButton}
+      <CIcon icon={cilLockLocked} /> {titleButton}
     </CButton>
   )
 }

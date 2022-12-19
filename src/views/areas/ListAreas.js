@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { Link } from 'react-router-dom'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import Axios from 'axios'
@@ -17,7 +18,14 @@ import {
 } from '@coreui/react'
 
 import CIcon from '@coreui/icons-react'
-import { cilActionUndo, cilCommand, cilDelete, cilDescription, cilEqualizer } from '@coreui/icons'
+import {
+  cilActionUndo,
+  cilCommand,
+  cilDelete,
+  cilDescription,
+  cilEqualizer,
+  cilLineStyle,
+} from '@coreui/icons'
 
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
@@ -94,6 +102,19 @@ const Columnas = [
           <CIcon className="text-whitee" icon={cilActionUndo} />
         </CButton>
       ),
+  },
+  {
+    name: '',
+    button: true,
+    cell: (row) => (
+      <Link
+        to={`/areas/vista-registro/${row.Codigo}`}
+        className="btn btn-sm btn-outline-primary ms-2 "
+        title="Ver"
+      >
+        <CIcon className="text-whitee" icon={cilLineStyle} />
+      </Link>
+    ),
   },
 ]
 

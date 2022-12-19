@@ -1,4 +1,5 @@
 import React from 'react'
+import { SignOutButton } from 'src/components/LogoutButton'
 import {
   CAvatar,
   CBadge,
@@ -84,10 +85,11 @@ const AppHeaderDropdown = () => {
           </CBadge>
         </CDropdownItem>
         <CDropdownDivider />
-        <CDropdownItem href="#">
+        <CDropdownItem href="#" className="btn">
           <CIcon icon={cilLockLocked} className="me-2" />
           Lock Account
         </CDropdownItem>
+        <SignOutButton className="w-100 text-center" titleButton={'Salir'} />
       </CDropdownMenu>
     </CDropdown>
   )

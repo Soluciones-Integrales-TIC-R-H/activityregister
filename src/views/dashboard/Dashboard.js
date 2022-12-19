@@ -296,7 +296,7 @@ const Dashboard = () => {
         <CCardFooter>
           <CRow xs={{ cols: 1 }} md={{ cols: 5 }} className="text-center">
             {progressExample.map((item, index) => (
-              <CCol className="mb-sm-2 mb-0" key={index}>
+              <CCol className="mb-sm-2 mb-0" key={'medium_' + index}>
                 <div className="text-medium-emphasis">{item.title}</div>
                 <strong>
                   {item.value} ({item.percent}%)
@@ -334,7 +334,7 @@ const Dashboard = () => {
 
                   <hr className="mt-0" />
                   {progressGroupExample1.map((item, index) => (
-                    <div className="progress-group mb-4" key={index}>
+                    <div className="progress-group mb-4" key={'progress_' + index}>
                       <div className="progress-group-prepend">
                         <span className="text-medium-emphasis small">{item.title}</span>
                       </div>
@@ -365,7 +365,7 @@ const Dashboard = () => {
                   <hr className="mt-0" />
 
                   {progressGroupExample2.map((item, index) => (
-                    <div className="progress-group mb-4" key={index}>
+                    <div className="progress-group mb-4" key={'progress_3_' + index}>
                       <div className="progress-group-header">
                         <CIcon className="me-2" icon={item.icon} size="lg" />
                         <span>{item.title}</span>
@@ -380,7 +380,7 @@ const Dashboard = () => {
                   <div className="mb-5"></div>
 
                   {progressGroupExample3.map((item, index) => (
-                    <div className="progress-group" key={index}>
+                    <div className="progress-group" key={'progress_2_' + index}>
                       <div className="progress-group-header">
                         <CIcon className="me-2" icon={item.icon} size="lg" />
                         <span>{item.title}</span>
@@ -414,7 +414,7 @@ const Dashboard = () => {
                 </CTableHead>
                 <CTableBody>
                   {tableExample.map((item, index) => (
-                    <CTableRow v-for="item in tableItems" key={index}>
+                    <CTableRow v-for="item in tableItems" key={'avatar_' + index}>
                       <CTableDataCell className="text-center">
                         <CAvatar size="md" src={item.avatar.src} status={item.avatar.status} />
                       </CTableDataCell>

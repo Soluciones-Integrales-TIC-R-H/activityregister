@@ -21,11 +21,11 @@ const msalInstance = new PublicClientApplication(msalConfig)
  */
 createRoot(document.getElementById('root')).render(
   <Provider store={store}>
-    <React.StrictMode>
-      <MsalProvider instance={msalInstance}>
-        <App />
-      </MsalProvider>
-    </React.StrictMode>
+    {/* <React.StrictMode> */}
+    <MsalProvider instance={msalInstance}>
+      <App />
+    </MsalProvider>
+    {/* </React.StrictMode> */}
   </Provider>,
 )
 

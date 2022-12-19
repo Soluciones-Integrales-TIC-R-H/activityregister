@@ -1,19 +1,20 @@
 import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
-import { CSidebar, CSidebarBrand, CSidebarNav, CSidebarToggler } from '@coreui/react'
+import { CImage, CSidebar, CSidebarBrand, CSidebarNav, CSidebarToggler } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 
 import { AppSidebarNav } from './AppSidebarNav'
 
-import { logoNegative } from 'src/assets/brand/logo-negative'
+import logoClient from 'src/assets/images/logos/cliente.png'
+import bgFondo from 'src/assets/images/fondos/bg-fondo.jpg'
 import { sygnet } from 'src/assets/brand/sygnet'
 
 import SimpleBar from 'simplebar-react'
 import 'simplebar/dist/simplebar.min.css'
 
 // sidebar nav config
-import navigation from '../_nav'
+import navigation from '../_nav_original'
 
 const AppSidebar = () => {
   const dispatch = useDispatch()
@@ -28,9 +29,14 @@ const AppSidebar = () => {
       onVisibleChange={(visible) => {
         dispatch({ type: 'set', sidebarShow: visible })
       }}
+      // style={{
+      //   backgroundSize: 'cover',
+      //   backgroundImage:
+      //     'linear-gradient(rgba(229, 83, 83, 0.5), rgba(229, 83, 83, 0.5)), url(' + bgFondo + ')',
+      // }}
     >
       <CSidebarBrand className="d-none d-md-flex" to="/">
-        <CIcon className="sidebar-brand-full" icon={logoNegative} height={35} />
+        <CImage className="sidebar-brand-full w-100" src={logoClient} height={60} />
         <CIcon className="sidebar-brand-narrow" icon={sygnet} height={35} />
       </CSidebarBrand>
       <CSidebarNav>

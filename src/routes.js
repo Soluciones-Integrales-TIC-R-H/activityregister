@@ -102,11 +102,15 @@ const routes = [
   { path: '/areas', name: 'Areas', element: AreasRegistroActividad, exact: true },
   { path: '/areas/nuevo-registro', name: 'Nuevo registro', element: NuevaAreaRegistroActividad },
   {
-    path: '/areas/editar-registro:_id',
+    path: '/areas/vista-registro/:_id',
+    name: 'Vista registro',
+    element: NuevaAreaRegistroActividad,
+  },
+  {
+    path: '/areas/editar-registro/:_id',
     name: 'Editar registro',
     element: NuevaAreaRegistroActividad,
   },
-
   { path: '/clientes', name: 'Clientes', element: ClientesRegistroActividad, exact: true },
   {
     path: '/clientes/nuevo-registro',

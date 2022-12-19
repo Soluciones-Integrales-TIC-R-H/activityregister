@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { Navigate } from 'react-router-dom'
+import React, { useEffect, useState } from 'react'
+import { Navigate, useParams } from 'react-router-dom'
 
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
@@ -23,7 +23,7 @@ import { cilDescription, cilSend } from '@coreui/icons'
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 
-//const URL_API_AREA = process.env.REACT_APP_API_AREA_POR_CODIGO + '/100'
+const URL_API_AREA = process.env.REACT_APP_API_AREA_POR_CODIGO
 const URL_API_CREAR_AREA = process.env.REACT_APP_API_AREA_INSERTAR
 
 const Vista = () => {
@@ -52,15 +52,22 @@ const FormularioSchema = Yup.object({
 })
 
 const Formulario = () => {
-  //const [datosArea, setDatosArea] = useState([])
-  //const { _id } = useParams()
-  //console.log(_id)
-  // useEffect(() => {
-  //   Axios.get(URL_API_AREA).then((data) => {
-  //     setDatosArea(data.data)
-  //     //console.log('DATOS AREA', data.data)
-  //   })
-  // }, [])
+  const [datosArea, setDatosArea] = useState([])
+  const { _id } = useParams()
+  console.log(_id)
+
+  useEffect(() => {
+    if (_id) {
+      try {
+        Axios.get(`${URL_API_AREA}/${_id}`).then((data) => {
+          setDatosArea(data.data)
+          console.log('DATOS AREA', data.data)
+        })
+      } catch (error) {
+        console.log('Error')
+      }
+    }
+  }, [_id])
 
   const formik = useFormik({
     initialValues: {
@@ -81,8 +88,12 @@ const Formulario = () => {
     Axios.post(URL_API_CREAR_AREA, dataForm).then((data) => {
       console.log(data)
       if (data.data) {
-        toast.success('Registro insertado') && <Navigate to="/areas" replace={true} />
-        formik.resetForm()
+        if (Object.keys(data.data.result).length > 0) {
+          toast.success('Registro insertado') && <Navigate to="/areas" replace={true} />
+          formik.resetForm()
+        } else {
+          toast.info(data.data.detail)
+        }
       } else {
         toast.error('Registro no se pudo insertar')
       }

@@ -91,9 +91,12 @@ const Formulario = () => {
     Axios.post(URL_API_CREAR_ACTIVIDAD, dataForm).then((data) => {
       console.log(data)
       if (data.data) {
-        toast.success('Registro insertado')
-        formik.resetForm()
-        return redirect('/login')
+        if (Object.keys(data.data.result).length > 0) {
+          toast.success('Registro insertado') && <Navigate to="/actividades" replace={true} />
+          formik.resetForm()
+        } else {
+          toast.info(data.data.detail)
+        }
       } else {
         toast.error('Registro no se pudo insertar')
       }
