@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import { Navigate, useParams } from 'react-router-dom'
-
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import Axios from 'axios'
@@ -18,25 +17,31 @@ import {
 } from '@coreui/react'
 
 import CIcon from '@coreui/icons-react'
-import { cilDescription, cilSend } from '@coreui/icons'
+import { cilDescription, cilLockLocked, cilLockUnlocked, cilSend } from '@coreui/icons'
 
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 
+import { refreshPage, descifrar } from 'src/utilities/utilidades'
+import { visualizar } from 'src/services/AccionesCrud'
+
 const URL_API_AREA = process.env.REACT_APP_API_AREA_POR_CODIGO
 const URL_API_CREAR_AREA = process.env.REACT_APP_API_AREA_INSERTAR
+const URL_API_ACTUALIZAR_AREA = process.env.REACT_APP_API_AREA_ACTUALIZAR
 
 const Vista = () => {
+  const { _id } = useParams()
+  const [tituloModulo, setTituloModulo] = useState('Nuevo registro')
   return (
     <CRow>
       <CCol xs={12}>
         <CCard className="mb-4">
           <CCardHeader className="text-primaryy text-uppercase">
             <CIcon icon={cilDescription} size="xl" />
-            <strong> Nuevo registro</strong>
+            <strong> {tituloModulo}</strong>
           </CCardHeader>
           <CCardBody>
-            <Formulario />
+            <Formulario _id={_id} setTituloModulo={setTituloModulo} tituloModulo={tituloModulo} />
           </CCardBody>
         </CCard>
       </CCol>
@@ -51,127 +56,247 @@ const FormularioSchema = Yup.object({
   estado: Yup.boolean(),
 })
 
-const Formulario = () => {
+// eslint-disable-next-line react/prop-types
+const Formulario = ({ _id = undefined, setTituloModulo = '', tituloModulo = '' }) => {
   const [datosArea, setDatosArea] = useState([])
-  const { _id } = useParams()
-  console.log(_id)
+  const [edicionFormulario, setEdicionFormulario] = useState(false)
+  const [initialValues, setInitialValues] = useState({
+    codigo: 'D0',
+    nombre: '',
+    notas: '',
+    estado: true,
+  })
 
-  useEffect(() => {
-    if (_id) {
+  const cargarDatos = async () => {
+    if (_id !== undefined) {
+      const textoDescifrado = descifrar(_id)
       try {
-        Axios.get(`${URL_API_AREA}/${_id}`).then((data) => {
-          setDatosArea(data.data)
-          console.log('DATOS AREA', data.data)
+        await Axios.get(`${URL_API_AREA}/${textoDescifrado}`).then((data) => {
+          console.log(data.data)
+          if (data.data) {
+            setDatosArea(data.data)
+            //console.log(data.data)
+            setInitialValues(
+              (initialValues.codigo = '' + data.data[0].Codigo),
+              (initialValues.nombre = data.data[0].Nombre),
+              (initialValues.notas = ''),
+              (initialValues.estado = data.data[0].Estado === 'Activa' ? true : false),
+            )
+            console.log('Soy initialValues dentro de cargaDatos', initialValues)
+          }
+          console.log('DATOS AREA', data.data[0])
+          console.log('[DATOS AREA]', datosArea)
         })
       } catch (error) {
-        console.log('Error')
+        console.log('Error', error)
       }
+    } else {
+      setInitialValues(
+        (initialValues.codigo = 'D0'),
+        (initialValues.nombre = ''),
+        (initialValues.notas = ''),
+        (initialValues.estado = true),
+      )
     }
-  }, [_id])
+  }
 
-  const formik = useFormik({
-    initialValues: {
+  useEffect(() => {
+    setEdicionFormulario(false)
+    setInitialValues({
       codigo: 'D0',
       nombre: '',
       notas: '',
       estado: true,
-    },
+    })
+    cargarDatos()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  useEffect(() => {
+    if (_id !== undefined) {
+      if (edicionFormulario === true) {
+        setTituloModulo('Editar registro')
+      } else {
+        setTituloModulo('Vista registro')
+      }
+    } else {
+      setTituloModulo('Nuevo registro')
+    }
+  }, [_id, edicionFormulario, setTituloModulo])
+
+  const desbloquearFormulario = () => {
+    setEdicionFormulario(!edicionFormulario)
+    cargarDatos()
+  }
+
+  const cancelarAccion = () => {
+    if (datosArea[0]) {
+      setInitialValues({
+        codigo: datosArea[0].Codigo.toString(),
+        nombre: datosArea[0].Nombre,
+        notas: '',
+        estado: datosArea[0].Estado === 'Activa' ? true : false,
+      })
+    } else {
+      setInitialValues({
+        codigo: 'D0',
+        nombre: '',
+        notas: '',
+        estado: true,
+      })
+    }
+    setEdicionFormulario(false)
+    refreshPage()
+  }
+
+  const formik = useFormik({
+    initialValues: initialValues,
     validationSchema: FormularioSchema,
     onSubmit: (values) => {
-      //alert(JSON.stringify(values, null, 2))
       sendData(values)
       //formik.resetForm()
     },
   })
 
   const sendData = async (dataForm) => {
-    Axios.post(URL_API_CREAR_AREA, dataForm).then((data) => {
-      console.log(data)
-      if (data.data) {
-        if (Object.keys(data.data.result).length > 0) {
-          toast.success('Registro insertado') && <Navigate to="/areas" replace={true} />
-          formik.resetForm()
-        } else {
-          toast.info(data.data.detail)
-        }
-      } else {
-        toast.error('Registro no se pudo insertar')
+    console.log('Edicion Formulario: ', edicionFormulario)
+    console.log('Titulo Formulario: ', tituloModulo)
+    if (edicionFormulario && tituloModulo !== '') {
+      switch (tituloModulo.toUpperCase()) {
+        case 'EDITAR REGISTRO':
+          console.log('SOY FUNCION EDITAR')
+          Axios.put(URL_API_ACTUALIZAR_AREA, dataForm).then((data) => {
+            console.log(data)
+            if (data.data) {
+              if (Object.keys(data.data.result).length > 0) {
+                toast.success('Registro actualizado')
+                formik.resetForm()
+                setEdicionFormulario(false)
+                //window.location.href = '#/areas'
+              } else {
+                toast.info(data.data.detail)
+              }
+            } else {
+              toast.error('Registro no se pudo actualizar')
+            }
+          })
+          break
+        case 'NUEVO REGISTRO':
+          console.log('SOY FUNCION NUEVO')
+          Axios.post(URL_API_CREAR_AREA, dataForm).then((data) => {
+            console.log(data)
+            if (data.data) {
+              if (Object.keys(data.data.result).length > 0) {
+                toast.success('Registro insertado')
+                formik.resetForm()
+                setEdicionFormulario(false)
+                visualizar('/areas/vista-registro', data.data.result.Codigo)
+              } else {
+                toast.info(data.data.detail)
+              }
+            } else {
+              toast.error('Registro no se pudo insertar')
+            }
+          })
+          break
+        default:
+          console.log('FUNCION NO DEFINIDA, NO HAGO NADA')
       }
-    })
+    } else {
+      toast.error('Accion no permitida')
+    }
   }
 
   return (
-    <CForm className="row g-3" onSubmit={formik.handleSubmit}>
-      <CRow>
-        <CCol md={2}>
-          <CFormInput
-            type="text"
-            id="codigo"
-            name="codigo"
-            disabled
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            value={formik.values.codigo}
-            className="mt-3 text-center"
-          />
-          {/* {formik.errors.codigo ? (
+    <>
+      <fieldset disabled={!edicionFormulario}>
+        <CForm className="row g-3" onSubmit={formik.handleSubmit}>
+          <CRow>
+            <CCol md={2}>
+              <CFormInput
+                type="text"
+                id="codigo"
+                name="codigo"
+                disabled
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.codigo}
+                className="mt-3 text-center"
+              />
+              {/* {formik.errors.codigo ? (
             <span className="text-danger">{formik.errors.codigo} </span>
           ) : null} */}
-        </CCol>
-      </CRow>
-      <CCol md={12} className="mt-2 mb-3">
-        <label>
-          <strong>NOMBRE DEL AREA</strong>
-        </label>
-        <CFormInput
-          type="text"
-          id="nombre"
-          name="nombre"
-          feedback="Por favor, digita el nombre del area a registrar"
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          value={formik.values.nombre}
-          className={formik.errors.nombre && 'form-control border-danger'}
-        />
-        {formik.errors.nombre ? <span className="text-danger">{formik.errors.nombre} </span> : null}
-      </CCol>
-      <CCol md={12} className="mt-2 mb-3">
-        <label>
-          <strong>OBSERVACIONES</strong>
-        </label>
-        <CFormTextarea
-          as="textarea"
-          name="notas"
-          rows="3"
-          feedback="Por favor, selecciona una opción de la lista"
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          value={formik.values.notas}
-          className={formik.errors.notas && 'form-control border-danger'}
-          placeholder="Escribe tus observaciones"
-          aria-describedby="basic-addon5"
-        ></CFormTextarea>
-      </CCol>
-      <CCol md={12} className="mt-2 mb-3">
-        <label>
-          <strong>ESTADO</strong>
-        </label>
-        <CFormSwitch
-          label="Activo"
-          id="estadoArea"
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          value={formik.values.estado}
-          checked={formik.values.estado}
-        />
-      </CCol>
-      <CCol xs={12}>
-        <CButton color="primary" type="submit">
-          <CIcon icon={cilSend} /> Guardar
+            </CCol>
+          </CRow>
+          <CCol md={12} className="mt-2 mb-3">
+            <label>
+              <strong>NOMBRE DEL AREA</strong>
+            </label>
+            <CFormInput
+              type="text"
+              id="nombre"
+              name="nombre"
+              feedback="Por favor, digita el nombre del area a registrar"
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              value={formik.values.nombre}
+              className={formik.errors.nombre && 'form-control border-danger'}
+            />
+            {formik.errors.nombre ? (
+              <span className="text-danger">{formik.errors.nombre} </span>
+            ) : null}
+          </CCol>
+          <CCol md={12} className="mt-2 mb-3">
+            <label>
+              <strong>OBSERVACIONES</strong>
+            </label>
+            <CFormTextarea
+              as="textarea"
+              name="notas"
+              rows="3"
+              feedback="Por favor, selecciona una opción de la lista"
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              value={formik.values.notas}
+              className={formik.errors.notas && 'form-control border-danger'}
+              placeholder="Escribe tus observaciones"
+              aria-describedby="basic-addon5"
+            ></CFormTextarea>
+          </CCol>
+          <CCol md={12} className="mt-2 mb-3">
+            <label>
+              <strong>ESTADO</strong>
+            </label>
+            <CFormSwitch
+              label="Activo"
+              id="estadoArea"
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              value={formik.values.estado}
+              checked={formik.values.estado}
+            />
+          </CCol>
+          <CCol xs={12}>
+            {edicionFormulario && (
+              <>
+                <CButton color="primary" type="submit">
+                  <CIcon icon={cilSend} /> Guardar
+                </CButton>
+                <CButton className="ms-2" color="secondary" onClick={cancelarAccion}>
+                  <CIcon icon={cilLockLocked} /> Cancelar
+                </CButton>
+              </>
+            )}
+          </CCol>
+          <ToastContainer position="bottom-center" autoClose={1000} />
+        </CForm>
+      </fieldset>
+      {!edicionFormulario && (
+        <CButton color="secondary" onClick={desbloquearFormulario}>
+          <CIcon icon={cilLockUnlocked} /> {_id ? 'Editar' : 'Nuevo'}
         </CButton>
-      </CCol>
-      <ToastContainer position="bottom-center" autoClose={1000} />
-    </CForm>
+      )}
+    </>
   )
 }
 

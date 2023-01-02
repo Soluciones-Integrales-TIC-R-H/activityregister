@@ -17,13 +17,20 @@ import {
 } from '@coreui/react'
 
 import CIcon from '@coreui/icons-react'
-import { cilActionUndo, cilCommand, cilDelete, cilDescription, cilEqualizer } from '@coreui/icons'
+import {
+  cilActionUndo,
+  cilCommand,
+  cilDelete,
+  cilDescription,
+  cilEqualizer,
+  cilLineStyle,
+} from '@coreui/icons'
 
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { nanoid } from 'nanoid'
 import TablaReporteExportar from 'src/components/TablaReporteExportar'
-import { eliminarLogicamente, restaurarLogicamente } from 'src/services/AccionesLogicas'
+import { eliminarLogicamente, restaurarLogicamente, visualizar } from 'src/services/AccionesCrud'
 
 const URL_API_DATOS_LISTADO = process.env.REACT_APP_API_ETAPAS_CONSULTA_AVANZADA
 const URL_API_ELIMINAR_ITEM = process.env.REACT_APP_API_ETAPA_ELIMINAR
@@ -112,6 +119,20 @@ const Columnas = [
           <CIcon className="text-whitee" icon={cilActionUndo} />
         </CButton>
       ),
+  },
+  {
+    name: '',
+    button: true,
+    cell: (row) => (
+      <CButton
+        variant="outline"
+        onClick={() => visualizar('/etapas/vista-registro', row.Codigo)}
+        className="btn btn-sm btn-outline-primary ms-2"
+        title={'Visualizar area'}
+      >
+        <CIcon className="text-whitee" icon={cilLineStyle} />
+      </CButton>
+    ),
   },
 ]
 

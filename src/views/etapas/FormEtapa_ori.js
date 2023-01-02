@@ -62,34 +62,45 @@ const FormularioSchema = Yup.object({
 // eslint-disable-next-line react/prop-types
 const Formulario = ({ _id = undefined, setTituloModulo = '', tituloModulo = '' }) => {
   const [areaList, setAreaList] = useState([])
+  const [datosEtapa, setDatosEtapa] = useState([])
   const [edicionFormulario, setEdicionFormulario] = useState(false)
   const [initialValues, setInitialValues] = useState({
-    codigo: 'D0',
-    nombre: '',
-    areas: '[]',
-    notas: '',
-    estado: true,
+    // codigo: 'D0',
+    // nombre: '',
+    // areas: '[]',
+    // notas: '',
+    // estado: true,
   })
-  const [datosEtapa, setDatosEtapa] = useState([
-    {
-      Codigo: initialValues.codigo,
-      Nombre: initialValues.nombre,
-      AreasAsociadas: initialValues.areas,
-      Notas: initialValues.notas,
-      Estado: initialValues.estado,
-    },
-  ])
 
   const cargarDatos = async () => {
     if (_id !== undefined) {
       const textoDescifrado = descifrar(_id)
       try {
         await Axios.get(`${URL_API_ETAPA}/${textoDescifrado}`).then((data) => {
+          console.log('Soy los datos del Back', data.data)
           if (data.data) {
             setDatosEtapa(data.data)
+            //console.log(data.data)
+            // setInitialValues(
+            //   (initialValues.codigo = data.data[0].Codigo),
+            //   (initialValues.nombre = data.data[0].Nombre),
+            //   (initialValues.areas = destroyArray(data.data[0].AreasAsociadas)),
+            //   (initialValues.notas = ''),
+            //   (initialValues.estado = data.data[0].Estado === 'Activa' ? true : false),
+            // )
+            setInitialValues({
+              ...initialValues,
+              codigo: data.data[0].Codigo,
+              nombre: data.data[0].Nombre,
+              areas: destroyArray(data.data[0].AreasAsociadas),
+              notas: '',
+              estado: data.data[0].Estado === 'Activa' ? true : false,
+            })
+            console.log('Soy initialValues dentro de cargaDatos', initialValues)
           }
-          // console.log('DATOS ETAPA DEL RESULT', data.data[0])
-          // console.log('[DATOS ETAPA STATE]', datosEtapa)
+          console.log('DATOS ETAPA DEL RESULT', data.data[0])
+          console.log('[DATOS ETAPA STATE]', datosEtapa)
+          console.log(datosEtapa.length)
         })
       } catch (error) {
         console.log('Error', error)
@@ -103,37 +114,43 @@ const Formulario = ({ _id = undefined, setTituloModulo = '', tituloModulo = '' }
         notas: '',
         estado: true,
       })
-      setDatosEtapa({
-        Codigo: initialValues.codigo,
-        Nombre: initialValues.nombre,
-        AreasAsociadas: initialValues.areas,
-        Notas: initialValues.notas,
-        Estado: initialValues.estado,
-      })
     }
   }
 
   useEffect(() => {
-    console.log('Datos etapa', datosEtapa[0])
+    setEdicionFormulario(false)
     setInitialValues({
       ...initialValues,
-      codigo: datosEtapa[0].Codigo,
-      nombre: datosEtapa[0].Nombre,
-      areas: destroyArray(datosEtapa[0].AreasAsociadas),
+      codigo: 'D0',
+      nombre: '',
+      areas: '[]',
       notas: '',
-      estado: datosEtapa[0].Estado === 'Activa' ? true : false,
-    })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [datosEtapa])
-
-  useEffect(() => {
-    setEdicionFormulario(false)
-    Axios.get(URL_API_AREAS).then((data) => {
-      setAreaList(data.data)
+      estado: true,
     })
     cargarDatos()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  useEffect(() => {
+    Axios.get(URL_API_AREAS).then((data) => {
+      setAreaList(data.data)
+    })
+  }, [])
+
+  useEffect(() => {
+    console.log('Soy initialValues useEffect ', initialValues)
+  }, [initialValues])
+
+  useEffect(() => {
+    console.log('Datos ', datosEtapa[0])
+    // setInitialValues({
+    //   codigo: datosEtapa[0].Codigo,
+    //   nombre: datosEtapa[0].Nombre,
+    //   areas: destroyArray(datosEtapa[0].AreasAsociadas),
+    //   notas: '',
+    //   estado: datosEtapa[0].Estado === 'Activa' ? true : false,
+    // })
+  }, [datosEtapa])
 
   useEffect(() => {
     if (_id !== undefined) {
@@ -145,7 +162,6 @@ const Formulario = ({ _id = undefined, setTituloModulo = '', tituloModulo = '' }
     } else {
       setTituloModulo('Nuevo registro')
     }
-    cargarDatos()
   }, [_id, edicionFormulario, setTituloModulo])
 
   const desbloquearFormulario = () => {

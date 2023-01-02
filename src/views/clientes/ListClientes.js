@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import Axios from 'axios'
-import { eliminarLogicamente, restaurarLogicamente } from 'src/services/AccionesLogicas'
+import { eliminarLogicamente, restaurarLogicamente } from 'src/services/AccionesCrud'
 import {
   CBadge,
   CButton,

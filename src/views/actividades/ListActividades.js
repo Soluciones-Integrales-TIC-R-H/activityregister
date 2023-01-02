@@ -23,7 +23,7 @@ import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { nanoid } from 'nanoid'
 import TablaReporteExportar from 'src/components/TablaReporteExportar'
-import { eliminarLogicamente, restaurarLogicamente } from 'src/services/AccionesLogicas'
+import { eliminarLogicamente, restaurarLogicamente } from 'src/services/AccionesCrud'
 
 const URL_API_DATOS_LISTADO = process.env.REACT_APP_API_ACTIVIDADES_CONSULTA_AVANZADA
 const URL_API_ELIMINAR_ITEM = process.env.REACT_APP_API_ACTIVIDAD_ELIMINAR

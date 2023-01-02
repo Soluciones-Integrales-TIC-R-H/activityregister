@@ -31,7 +31,7 @@ import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { nanoid } from 'nanoid'
 import TablaReporteExportar from 'src/components/TablaReporteExportar'
-import { eliminarLogicamente, restaurarLogicamente } from 'src/services/AccionesLogicas'
+import { eliminarLogicamente, restaurarLogicamente, visualizar } from 'src/services/AccionesCrud'
 
 const URL_API_DATOS_LISTADO = process.env.REACT_APP_API_AREAS_CONSULTA_AVANZADA
 const URL_API_ELIMINAR_ITEM = process.env.REACT_APP_API_AREA_ELIMINAR
@@ -107,13 +107,14 @@ const Columnas = [
     name: '',
     button: true,
     cell: (row) => (
-      <Link
-        to={`/areas/vista-registro/${row.Codigo}`}
-        className="btn btn-sm btn-outline-primary ms-2 "
-        title="Ver"
+      <CButton
+        variant="outline"
+        onClick={() => visualizar('/areas/vista-registro', row.Codigo)}
+        className="btn btn-sm btn-outline-primary ms-2"
+        title={'Visualizar area'}
       >
         <CIcon className="text-whitee" icon={cilLineStyle} />
-      </Link>
+      </CButton>
     ),
   },
 ]
