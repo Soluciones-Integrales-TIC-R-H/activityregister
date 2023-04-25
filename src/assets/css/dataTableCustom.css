@@ -1,0 +1,27 @@
+.rdt_Table {
+}
+.rdt_TableRow {
+}
+
+.rdt_TableCol {
+  background-color: #4f5d73;
+  color: white;
+}
+
+.rdt_TableCol_Sortable {
+}
+.rdt_TableCell {
+  background-color: white;
+}
+.rdt_TableHeader {
+}
+.rdt_TableFooter {
+}
+.rdt_TableHead {
+}
+.rdt_TableHeadRow {
+}
+.rdt_TableBody {
+}
+.rdt_ExpanderRow {
+}
