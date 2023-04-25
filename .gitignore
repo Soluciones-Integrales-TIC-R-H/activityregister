@@ -18,6 +18,8 @@ yarn.lock
 .env
 .env.local
 local env.txt
+production env.txt
+production.env
 .env.development.local
 .env.test.local
 .env.production.local
