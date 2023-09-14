@@ -39,8 +39,8 @@ const Vista = () => {
   return (
     <CRow>
       <CCol xs={12}>
-        <CCard className="mb-4">
-          <CCardHeader className="text-primaryy text-uppercase">
+        <CCard className="mb-4 border-dark">
+          <CCardHeader className="bg-dark text-white text-uppercase">
             <CIcon icon={cilDescription} size="xl" />
             <strong> {tituloModulo}</strong>
           </CCardHeader>
@@ -419,7 +419,7 @@ const Formulario = ({ _id = undefined, setTituloModulo = '', tituloModulo = '' }
       </CForm>
 
       {!edicionFormulario && (
-        <CButton color="secondary" onClick={desbloquearFormulario}>
+        <CButton color="primary" onClick={desbloquearFormulario}>
           <CIcon icon={cilLockUnlocked} /> {_id ? 'Editar' : 'Nuevo'}
         </CButton>
       )}

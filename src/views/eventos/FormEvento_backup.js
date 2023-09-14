@@ -49,8 +49,7 @@ const URL_API_ALL_ETAPAS = process.env.REACT_APP_API_ETAPAS
 const URL_API_ALL_ACTIVIDADES = process.env.REACT_APP_API_ACTIVIDADES
 //FIN ELIMINAR LUEGO, CAMBIAR ESTRATEGIA DE OBTENCION DE DATOS
 const URL_API_FUNCIONARIOS = process.env.REACT_APP_API_FUNCIONARIOS_ACTIVOS
-//const URL_API_AREAS = process.env.REACT_APP_API_AREAS_ACTIVAS
-const URL_API_MIS_DATOS_ASOCIADOS = process.env.REACT_APP_API_FUNCIONARIO_POR_EMAIL
+const URL_API_AREAS = process.env.REACT_APP_API_AREAS_ACTIVAS
 const URL_API_CLIENTES = process.env.REACT_APP_API_CLIENTE_POR_AREA
 const URL_API_ETAPAS = process.env.REACT_APP_API_ETAPA_POR_AREA
 const URL_API_ACTIVIDADES = process.env.REACT_APP_API_ACTIVIDADES_POR_ETAPA
@@ -60,8 +59,8 @@ const Vista = () => {
   return (
     <CRow>
       <CCol xs={12}>
-        <CCard className="mb-4 border-dark">
-          <CCardHeader className="bg-dark text-white text-uppercase">
+        <CCard className="mb-4">
+          <CCardHeader className="bg-primary text-white text-uppercase">
             <CIcon icon={cilDescription} size="xl" />
             <strong> Registro de actividad</strong>
           </CCardHeader>
@@ -92,7 +91,7 @@ const FormularioSchema = Yup.object({
   etapa: Yup.string().required('Campo requerido'),
   actividades: Yup.array().required('Campo requerido').min(1, 'Campo requerido'),
   tiempo: Yup.number().required('Campo requerido'),
-  notas: Yup.string().required('Campo requerido'),
+  notas: Yup.string(),
   seguimiento: Yup.boolean(),
 })
 
@@ -122,18 +121,9 @@ const Formulario = () => {
   useEffect(() => {
     const cargarTodasLasAreas = async () => {
       //Activas
-      await Axios.post(
-        URL_API_MIS_DATOS_ASOCIADOS,
-        { email: datosFuncionario.email },
-        CONFIG_HEADER_AUTH,
-      ).then((data) => {
+      await Axios.get(URL_API_AREAS, CONFIG_HEADER_AUTH).then((data) => {
         if (data.data) {
-          setListaAreasActivas(
-            data.data.result.AreasAsociadas.filter((area) => area.Estado === 'Activa'),
-          )
-          setListaClientes(
-            data.data.result.ClientesAsociados.filter((cliente) => cliente.Estado === 'Activo'),
-          )
+          setListaAreasActivas(data.data.result)
         } else {
           toast.error('No se cargaron las areas disponibles')
         }
@@ -187,7 +177,7 @@ const Formulario = () => {
     }
     setLoading(true)
     cargarTodasLasAreas()
-    //cargarFuncionarios()
+    cargarFuncionarios()
     cargarTodasLasEtapas()
     cargarTodasLasActividades()
     cargarTodosLosClientes()
@@ -243,7 +233,7 @@ const Formulario = () => {
     if (formik.values.area !== '') {
       if (stateAreaControl !== formik.values.area) {
         //console.log('Cambio el area')
-        //formik.values.cliente = ''
+        formik.values.cliente = ''
         formik.values.etapa = ''
         formik.values.actividades = []
       }
@@ -252,17 +242,17 @@ const Formulario = () => {
         //setListaEtapas(data.data.result)
         setListaEtapas(data.data.result.filter((etapa) => etapa.Estado === 'Activa'))
       })
-      // Axios.get(URL_API_CLIENTES + '/' + formik.values.area, CONFIG_HEADER_AUTH).then((datos) => {
-      //   //console.log(datos.data)
-      //   //setListaClientes(datos.data.result)
-      //   setListaClientes(datos.data.result.filter((cliente) => cliente.Estado === 'Activo'))
-      // })
+      Axios.get(URL_API_CLIENTES + '/' + formik.values.area, CONFIG_HEADER_AUTH).then((datos) => {
+        //console.log(datos.data)
+        //setListaClientes(datos.data.result)
+        setListaClientes(datos.data.result.filter((cliente) => cliente.Estado === 'Activo'))
+      })
     } else {
-      //setListaClientes([])
+      setListaClientes([])
       setListaEtapas([])
       setListaActividades([])
       formik.values.area = ''
-      //formik.values.cliente = ''
+      formik.values.cliente = ''
       formik.values.etapa = ''
       formik.values.actividades = []
     }
@@ -280,7 +270,7 @@ const Formulario = () => {
         },
       )
     } else {
-      //setListaClientes([])
+      setListaClientes([])
       setListaEtapas([])
       setListaActividades([])
       formik.values.actividades = []
@@ -540,24 +530,8 @@ const Formulario = () => {
           </CRow>
           <CCol md={12}>
             <label className="text-uppercase">
-              <strong>Empresa cliente </strong>
-            </label>{' '}
-            <CFormCheck
-              inline
-              type="radio"
-              name="inlineRadioOptions"
-              id="inlineCheckbox1"
-              value="option1"
-              label="Listado por celula"
-            />
-            <CFormCheck
-              inline
-              type="radio"
-              name="inlineRadioOptions"
-              id="inlineCheckbox2"
-              value="option2"
-              label="Listado general"
-            />
+              <strong>Empresa cliente</strong>
+            </label>
             <CFormSelect
               id="cliente"
               onChange={formik.handleChange}

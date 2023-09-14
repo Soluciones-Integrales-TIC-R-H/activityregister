@@ -1,0 +1,1 @@
+https://es.freelogodesign.org/manager/logo/032ecb105f23487891e82a89bb771a45/showcase

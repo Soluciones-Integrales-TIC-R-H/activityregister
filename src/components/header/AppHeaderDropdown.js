@@ -31,7 +31,7 @@ const AppHeaderDropdown = () => {
         <CDropdownToggle placement="bottom-end" className="py-0" caret={false}>
           <div className="m-0 justify-content-center align-items-center text-center">
             <div
-              className="bg-dark text-white text-uppercase font-weight-bold border rounded-circle mx-autoo fs-4"
+              className="bg-primary text-white text-uppercase font-weight-bold border rounded-circle mx-autoo fs-4"
               style={{ width: '40px', height: '40px' }}
             >
               {datosFuncionario ? datosFuncionario.nombre.slice(0, 1) : 'AA'}

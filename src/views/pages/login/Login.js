@@ -34,7 +34,7 @@ const Login = () => {
           <CCol md={8}>
             <CCardGroup>
               {/* Este texto solo visible para smartphone */}
-              <CCard className="d-block d-sm-block d-md-none text-white bg-secondary mb-11 border-none py-1">
+              <CCard className="d-block d-sm-block d-md-none text-white bg-dark mb-11 border-none py-1">
                 <CCardBody className="text-center">
                   <div>
                     <h2 className="text-uppercase">{CONFIG_APP.NAME}</h2>
@@ -98,7 +98,7 @@ const Login = () => {
                 </CCardBody>
               </CCard>
               {/* Este texto solo visible para escritorio */}
-              <CCard className="d-none d-sm-none d-md-block text-white bg-secondary py-5">
+              <CCard className="d-none d-sm-none d-md-block text-white bg-dark py-5">
                 <CCardBody className="text-center">
                   <div>
                     <h2 className="text-uppercase">{CONFIG_APP.NAME}</h2>

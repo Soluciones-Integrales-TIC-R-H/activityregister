@@ -15,9 +15,11 @@ yarn.lock
 .eslintcache
 .DS_Store
 .idea
+
 .env
 .env.local
 local env.txt
+local.env
 production env.txt
 production.env
 .env.development.local

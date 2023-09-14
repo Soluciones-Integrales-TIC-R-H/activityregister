@@ -46,8 +46,8 @@ const Vista = () => {
       <AuthenticatedTemplate>
         <CRow>
           <CCol xs={12}>
-            <CCard>
-              <CCardHeader className="text-primaryy text-uppercase">
+            <CCard className="border-dark">
+              <CCardHeader className="bg-dark text-white text-uppercase">
                 <CIcon icon={cilDescription} size="xl" />
                 <strong> Registro de actividad</strong>
               </CCardHeader>

@@ -16,6 +16,7 @@ import CIcon from '@coreui/icons-react'
 import { AppSidebarNav } from './AppSidebarNav'
 
 import logoClient from 'src/assets/images/logos/cliente.png'
+import logoApp from 'src/assets/brand/logosApp/favicon-96x96.png'
 //import bgFondo from 'src/assets/images/fondos/bg-fondo.jpg'
 import { sygnet } from 'src/assets/brand/sygnet'
 
@@ -47,7 +48,8 @@ const AppSidebar = () => {
     >
       <CSidebarBrand className="d-none d-md-flex" to="/">
         <CImage className="sidebar-brand-full w-100" src={logoClient} height={60} />
-        <CIcon className="sidebar-brand-narrow" icon={sygnet} height={35} />
+        <CImage className="sidebar-brand-narrow" src={logoApp} height={60} />
+        {/* <CIcon className="sidebar-brand-narrow" icon={sygnet} height={35} /> */}
       </CSidebarBrand>
       <CSidebarNav>
         <SimpleBar>
@@ -59,8 +61,9 @@ const AppSidebar = () => {
         onClick={() => dispatch({ type: 'set', sidebarUnfoldable: !unfoldable })}
       >
         <div className="sidebar-brand-full align-middle">
-          <CBadge color="success">
-            <span className=" text-uppercase">Versión </span>
+          <CBadge color="primary"> 
+            <CImage src={logoApp} height={16} />
+            <span className=" text-uppercase"> Versión </span>
             {CONFIG_APP.VERSION}
           </CBadge>
         </div>

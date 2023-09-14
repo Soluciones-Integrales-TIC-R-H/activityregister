@@ -205,8 +205,8 @@ const TablaReporteExportar = ({
     <>
       <CRow>
         <CCol xs={12}>
-          <CCard className="mt-1">
-            <CCardHeader className="text-primaryy text-uppercase">
+          <CCard className="mt-1 border-0">
+            <CCardHeader className="bg-primary text-white text-uppercase">
               <CIcon icon={cilList} size="xl" />
               <small hidden>Listado</small>
               <strong> {tituloTabla}</strong>
